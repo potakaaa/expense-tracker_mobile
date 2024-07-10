@@ -1,8 +1,6 @@
 # 📱💸 Expense Tracker Mobile
 
-Welcome to the **Expense Tracker Mobile** app! 🚀 This is a very simple expense tracker application built using **React Native**. As a beginner in both JavaScript and React Native, this project is my stepping stone to gain more knowledge and experience in these technologies. 🌱
-
-![Expense Tracker](./assets/expense_tracker_screenshot.png)
+Welcome to the **Expense Tracker Mobile** app! 🚀 This is a very simple expense tracker application built using **React Native**. As a beginner in both JavaScript and React Native, this project is a stepping stone to gain more knowledge and experience in these technologies. 🌱
 
 ## 🌟 Features
 
