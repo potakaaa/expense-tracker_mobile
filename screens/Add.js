@@ -6,7 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 export default function AddScreen() {
     return (
       <SafeAreaView style={Styles.container}>
-      <Text style={Styles.text}>This is the Add page!</Text>
+      <Text style={Styles.h1}>This is the Add page!</Text>
       </SafeAreaView>
     );
 }
