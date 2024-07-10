@@ -54,5 +54,3 @@ Contributions, issues, and feature requests are welcome! Feel free to check the 
 - Special thanks to all the contributors and users who have helped improve this project.
 
 ---
-
-Happy coding! 🎉
