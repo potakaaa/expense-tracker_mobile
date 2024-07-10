@@ -1,21 +1,55 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { HomeScreen, AboutScreen, AddScreen } from "./screens";
+import { Styles } from "./screens/Styling.js";
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const Tab = createBottomTabNavigator();
+const Tab = createMaterialBottomTabNavigator();
 
 export default function App() {
 
   return (
-    <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Settings" component={AddScreen} />
-        <Tab.Screen name="About" component={AboutScreen} />
-      </Tab.Navigator>
-    </NavigationContainer>
+
+      <NavigationContainer>
+        <Tab.Navigator
+        initialRouteName="Home"
+        activeColor="#3e2465" 
+        inactiveColor="#c99c06"
+        title="Home"
+        
+        barStyle={{ marginLeft:10, marginRight:10 }}
+        >
+          <Tab.Screen name="Home" 
+          component={HomeScreen}
+          options={{
+            tabBarLabel: 'Home',
+            tabBarIcon: ({ color }) => (
+              <MaterialCommunityIcons name="home" color={color} size={26} />
+            ),
+          }}
+          />
+          <Tab.Screen name="Add" 
+          component={AddScreen}
+          options={{
+            tabBarLabel: 'Add',
+            tabBarIcon: ({ color }) => (
+              <MaterialCommunityIcons name="plus-box" color={color} size={26} />
+            ),
+          }}
+          />
+          <Tab.Screen name="About" 
+          component={AboutScreen} 
+          options={{
+            tabBarLabel: 'About',
+            tabBarIcon: ({ color }) => (
+              <MaterialCommunityIcons name="information" color={color} size={26} />
+            ),
+          }}
+          />
+        </Tab.Navigator>
+      </NavigationContainer>
+ 
+
     
   );
 }
