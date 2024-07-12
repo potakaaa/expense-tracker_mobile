@@ -6,7 +6,7 @@ import { Styles } from "./Styling.js";
 
 export default function HomeScreen() {
   var money = 2000; var expense = 433; const CURRENCY_SYMBOL = "$ ";
-  var expense_count = 1;
+  var expense_count = 0;
   return (
     <SafeAreaView style={Styles.container}>
       <Text style={Styles.h1}>Money</Text>
