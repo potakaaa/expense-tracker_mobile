@@ -19,7 +19,8 @@
     "react": "18.2.0",
     "react-native": "0.74.3",
     "react-native-linear-gradient": "^2.8.3",
-    "react-native-vector-icons": "^10.1.0"
+    "react-native-vector-icons": "^10.1.0",
+    "@shopify/flash-list": "1.6.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

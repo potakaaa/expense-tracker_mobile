@@ -1,13 +1,16 @@
 import React from "react";
-import { StyleSheet} from 'react-native';
+import { StyleSheet, useWindowDimensions} from 'react-native';
 
 
 
 export const Styles = StyleSheet.create({
+
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    alignContent: 'center',
+    
     
   },
 
@@ -61,6 +64,25 @@ export const Styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
 
+  },
+
+  linkButtons: {
+    backgroundColor: "white",
+    elevation: 10,
+    borderRadius: 10,
+    width: 180,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignContent: 'center',
+    marginTop: 15,
+  },
+
+  linkText: {
+    fontSize: 25,
+    fontWeight: "bold",
+    textAlign: "center",
+    textAlignVertical: "center",
   }
 });
 
