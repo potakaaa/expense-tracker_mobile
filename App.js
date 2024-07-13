@@ -3,13 +3,17 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import { HomeScreen, AboutScreen, AddScreen } from "./screens";
 import { Styles } from "./screens/Styling.js";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useFonts } from "expo-font";
 
 const Tab = createMaterialBottomTabNavigator();
 
 export default function App() {
 
+const[fontsLoaded] = useFonts({
+  "InterExtraBold": require("./assets/fonts/Inter-ExtraBold.ttf"),
+})
+  
   return (
-
       <NavigationContainer>
         <Tab.Navigator
         initialRouteName="Home"

@@ -79,11 +79,19 @@ export const Styles = StyleSheet.create({
   },
 
   linkText: {
+    fontFamily: "InterExtraBold",
     fontSize: 25,
     fontWeight: "bold",
     textAlign: "center",
     textAlignVertical: "center",
-  }
+  },
+
+  shadow: {
+    shadowColor: "black",
+    shadowOffset: { height: 2},
+    shadowOpacity: 0.3,
+  },
+
 });
 
 

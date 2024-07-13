@@ -1,7 +1,8 @@
 import React from "react";
-import { SafeAreaView, Text, Image, Linking, Alert, TouchableOpacity } from 'react-native';
+import { SafeAreaView, Text, Image, Linking, Alert, TouchableOpacity, View } from 'react-native';
 import { Styles } from "./Styling.js";
 import { LinearGradient } from 'expo-linear-gradient';
+import ImageBlurShadow from "react-native-image-blur-shadow";
 
 const github = "https://github.com/potakaaa";
 const facebook = "https://www.facebook.com/grldjr";
@@ -22,47 +23,70 @@ export default function AboutScreen() {
     <SafeAreaView style={Styles.container}>
       <Text 
       style = {{
+        fontFamily: "InterExtraBold",
         fontSize: 40,
-        fontWeight: 'bold',
         position: 'absolute',
-        top: 80,
-        textShadowColor: 'rgba(0, 0, 0, 0.3)',
-        textShadowOffset: {width: -2, height: 2},
-        textShadowRadius: 5
-      }}> About Me </Text>
+        top: 70,
+      }}>Hello</Text>
+   
       <Image 
       style = {{
         width: 200,
         height: 200,
         borderRadius: 100,
+        marginTop: 20,
+        justifyContent: 'center',
+        alignContent: 'center',
+        elevation: 10,
       }}
       source = {require('../assets/my_picture.jpg')} />
+
       <Text
       style = {{
-        fontSize: 30,
-        fontWeight: 'bold',
-        marginTop: 20,
-        marginBottom: 20,
-        textShadowColor: 'rgba(0, 0, 0, 0.3)',
-        textShadowOffset: {width: -1, height: 1},
-        textShadowRadius: 5
+        fontFamily: "InterExtraBold",
+        fontSize: 50,
+        marginTop: 40,
       }}
-      >Hello, I am Gerald!</Text>
-      <TouchableOpacity onPress={() => {
-        openUrl(github)
-      }}
-      style={Styles.linkButtons}
-      >
-        <Text style={Styles.linkText}>Github</Text>
-      </TouchableOpacity>
+      >I am Gerald!</Text>
+      <Text style={{
+        fontFamily: "InterExtraBold",
+        fontSize: 20,
+      }}>Connect with me?</Text>
+      
+      <View style={{
+        flex: 1,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        alignContent: 'flex-start'
+      }}>
 
-      <TouchableOpacity onPress={() => {
-        openUrl(facebook)
-      }}
-      style={Styles.linkButtons}
-      >
-        <Text style={Styles.linkText}>Facebook</Text>
-      </TouchableOpacity>
+      </View>
+
+      <View style={{ 
+        justifyContent: 'flex-start', 
+        alignItems: 'center', 
+        flexDirection: 'row', 
+        flex: 1,
+        flexWrap: 'wrap',
+        }}>
+        <View>
+          <Text>Github</Text>
+          <Text>Github</Text>
+          <Text>Github</Text>
+        </View>
+        <View>
+          <Text>icon</Text>
+          <Text>icon</Text>
+          <Text>icon</Text>
+        </View>
+      </View>
+
+      <Text style={{
+        fontFamily: "InterExtraBold",
+        fontSize: 17,
+        position: "absolute",
+        bottom: 25,
+      }}>Thank you for using my app!</Text>
       
     </SafeAreaView>
   )
