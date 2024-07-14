@@ -13,8 +13,9 @@ export const Styles = StyleSheet.create({
 
   h1: {
     fontFamily: "InterExtraBold",
-    fontSize: 50,
+    fontSize: 30,
     marginBottom: 10,
+    
   },
 
   rowContainer: {
@@ -29,7 +30,7 @@ export const Styles = StyleSheet.create({
     paddingLeft: 40,
     paddingRight: 40,
     paddingTop: 5,
-    paddingBottom: 5,
+    paddingBottom: 2,
     shadowColor: '#171717',
     shadowOffset: {width: -2, height: 4},
     shadowOpacity: 0.2,

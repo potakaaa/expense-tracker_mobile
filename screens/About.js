@@ -23,17 +23,17 @@ export default function AboutScreen() {
       <Text 
       style = {{
         fontFamily: "InterExtraBold",
-        fontSize: 40,
-        position: 'absolute',
-        top: 70,
+        fontSize: 30,
+        marginTop: 20,
+        marginBottom: 20
       }}>Hello</Text>
    
       <Image 
       style = {{
-        width: 200,
-        height: 200,
+        width: "50%",
+        height: "25%",
         borderRadius: 100,
-        marginTop: 100,
+        marginTop: 30,
         justifyContent: 'center',
         alignContent: 'center',
         elevation: 10,
@@ -43,7 +43,7 @@ export default function AboutScreen() {
       <Text
       style = {{
         fontFamily: "InterExtraBold",
-        fontSize: 50,
+        fontSize: 30,
         marginTop: 20,
       }}
       >I am Gerald!</Text>
@@ -112,8 +112,8 @@ export default function AboutScreen() {
       <Text style={{
         fontFamily: "InterExtraBold",
         fontSize: 17,
-        position: "absolute",
-        bottom: 25,
+        marginTop: 25,
+        
 
       }}>Thank you for using my app!</Text>
 

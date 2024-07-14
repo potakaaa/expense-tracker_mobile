@@ -27,25 +27,26 @@ export default function HomeScreen() {
       <Text style={Styles.h1}>Money</Text>
       <View style={[Styles.yellowContainer, {marginBottom: 50}]}>
         <View style={Styles.rowContainer}>
-          <Text style={[Styles.h1, {fontSize: 40}]}>{CURRENCY_SYMBOL + 2000}</Text>
+          <Text style={[Styles.h1, {fontSize: 25}]}>{CURRENCY_SYMBOL + 2000}</Text>
           <TouchableOpacity onPress={() => {
             console.log("Add pressed")
+            console.log(Dimensions.get('screen'))
             navigation.navigate("Add")
           }}>
-            <MaterialIcons style={{marginLeft: 10, marginBottom: 7}} name="add-circle" size={30} color="black" />
+            <MaterialIcons style={{marginLeft: 10, marginBottom: 7}} name="add-circle" size={28} color="black" />
           </TouchableOpacity>
         </View>
       </View>
 
       <Text style={Styles.h1}>Expenses</Text>
-      <View style={[Styles.yellowContainer, {marginBottom: 50}]}>
+      <View style={[Styles.yellowContainer, {marginBottom: 70}]}>
         <View style={Styles.rowContainer}>
-          <Text style={[Styles.h1, {fontSize: 40}]}>{CURRENCY_SYMBOL + 330}</Text>
+          <Text style={[Styles.h1, {fontSize: 25}]}>{CURRENCY_SYMBOL + 330}</Text>
           <TouchableOpacity onPress={() => {
             console.log("Add pressed")
             navigation.navigate("Add")
           }}>
-            <MaterialIcons style={{marginLeft: 10, marginBottom: 7}} name="add-circle" size={30} color="black" />
+            <MaterialIcons style={{marginLeft: 10, marginBottom: 7}} name="add-circle" size={28} color="black" />
           </TouchableOpacity>
           
         </View>
@@ -57,13 +58,13 @@ export default function HomeScreen() {
         paddingTop: 0,
       }]}>
         <View style={Styles.violetContainer}>
-          <Text style={[Styles.h1, {fontSize: 34}]}>Past Spendings</Text>
+          <Text style={[Styles.h1]}>Past Spendings</Text>
         </View>
         <View style={Styles.rowContainer}>
           <FlashList
         data={PAST_EXPENSES}
         estimatedItemSize={10}
-        estimatedListSize={{ height: 100, width: Dimensions.get("screen").width }}
+        estimatedListSize={{ height: 400, width: Dimensions.get("screen").width }}
         renderItem={({item}) => (
           <View style={{
             alignItems: 'center',
@@ -72,12 +73,12 @@ export default function HomeScreen() {
             }}>
             <Text style={[Styles.h1, {
               textAlign: "left", 
-              fontSize: 19,
+              fontSize: 17,
               marginLeft: 20,
               }]}>{item.name}</Text>
             <Text style={[Styles.h1, {
               textAlign: "right", 
-              fontSize: 19,
+              fontSize: 17,
               marginRight: 20,
               }]}>{item.amount}</Text>
           </View>

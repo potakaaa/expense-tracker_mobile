@@ -20,8 +20,13 @@ const[fontsLoaded] = useFonts({
         activeColor="#3e2465" 
         inactiveColor="#c99c06"
         title="Home"
+        backBehavior="history"
         
-        barStyle={{ marginLeft:10, marginRight:10 }}
+        barStyle={{ 
+          marginLeft:10, 
+          marginRight:10,
+          borderRadius: 50,
+        }}
         >
           <Tab.Screen name="Home" 
           component={HomeScreen}
