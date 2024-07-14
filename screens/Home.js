@@ -27,7 +27,10 @@ export default function HomeScreen() {
           backgroundColor: expense_count < 1 ? "transparent" : "#E9E08F", 
           paddingTop: 7,
           paddingBottom: 7,
-          marginTop: 50}}>
+          marginTop: 50,
+          height: 200
+        }}
+          >
           <Text style={Styles.h2}>Expense List</Text>
           
           <FlashList

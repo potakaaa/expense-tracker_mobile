@@ -92,6 +92,24 @@ export const Styles = StyleSheet.create({
     shadowOpacity: 0.3,
   },
 
+  aboutTouchables: {
+    justifyContent: "center", 
+    alignItems: "center", 
+    paddingLeft: 30,
+    paddingRight: 30,
+    paddingTop: 15,
+    paddingBottom: 15,
+    marginTop: 10,
+    marginBottom: 15,
+    borderRadius: 20,
+    backgroundColor: "white",
+    shadowColor: '#171717',
+    shadowOffset: {width: -2, height: 4},
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 10,
+  }
+
 });
 
 
