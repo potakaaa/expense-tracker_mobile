@@ -69,11 +69,7 @@ export default function AboutScreen() {
         }}>
           <View style={{flexDirection: "row", alignItems: "center"}}> 
             <AntDesign name="facebook-square" size={30} color="#1877F2" />
-            <Text style={{
-              marginLeft: 10,
-              fontFamily: "InterExtraBold",
-              fontSize: 17,
-              }}>Facebook</Text>
+            <Text style={Styles.aboutLinks}>Facebook</Text>
           </View>
         </TouchableOpacity>
 
@@ -85,11 +81,7 @@ export default function AboutScreen() {
         }}>
           <View style={{flexDirection: "row", alignItems: "center"}}> 
           <AntDesign name="github" size={30} color="#171412" />
-            <Text style={{
-              marginLeft: 10,
-              fontFamily: "InterExtraBold",
-              fontSize: 17,
-              }}>Github</Text>
+            <Text style={Styles.aboutLinks}>Github</Text>
           </View>
         </TouchableOpacity>
 
@@ -101,11 +93,7 @@ export default function AboutScreen() {
         }}>
           <View style={{flexDirection: "row", alignItems: "center"}}> 
           <AntDesign name="linkedin-square" size={30} color="#0a66c2" />
-            <Text style={{
-              marginLeft: 10,
-              fontFamily: "InterExtraBold",
-              fontSize: 17,
-              }}>LinkedIn</Text>
+            <Text style={Styles.aboutLinks}>LinkedIn</Text>
           </View>
         </TouchableOpacity>
 
