@@ -6,28 +6,9 @@ import PAST_EXPENSES from "./past_expenses.js";
 import { useState } from 'react';
 
 export default function AddScreen() {
-  const [money, setMoney] = useState(0);
+  const [money, setMoney] = useState("");
   const [name, setName] = useState("");
-  const [expense, setExpense] = useState(0);
-  this.myTextInput = React.createRef();
-
-  const [inputValue, setInputValue] = useState('');
-
-  const handleTextChange = (text) => {
-    setInputValue(text);
-  };
-
-  const handleSubmitEditing = () => {
-    // Perform any action you want on submit
-    console.log('Input submitted:', inputValue);
-
-    // Clear the input field
-    setInputValue('');
-  };
-
-  submitHandler = () => {
-    setMoney({money: ""})
-  }
+  const [expense, setExpense] = useState("");
 
     return (
       <SafeAreaView style={Styles.container}>
@@ -39,33 +20,91 @@ export default function AddScreen() {
             }]}>
             <TextInput 
             value={money}
-            onSubmitEditing={newMoney => {
-              console.log(newMoney.nativeEvent.text)
+            onChangeText={(text) => {
+              setMoney(text);
             }}
-            ref={this.myTextInput}
-            placeholder="Enter money"
+            onSubmitEditing={() => {
+              console.log("Money Submitted: ", money)
+              setMoney("")
+            }}
+            placeholder={"Amount"}
             keyboardType="phone-pad"
             style={{
               textAlign: 'center',
               fontFamily: "InterExtraBold",
-              fontSize: 25
+              fontSize: 20,
+              width: 120,
+
+
+
+
             }}
+            returnKeyType="done"
             />
             
           </View>
+
+          <Text style={Styles.h1}>Add Expense</Text>
+            <View style={[Styles.yellowContainer, {
+              marginBottom: 20, 
+              paddingBottom: 15,
+              paddingTop: 15
+              }]}>
+                <TextInput 
+                value={name}
+                onChangeText={(text) => {
+                  setName(text);
+                }}
+                placeholder={"Name"}
+                style={{
+                  textAlign: 'center',
+                  fontFamily: "InterExtraBold",
+                  fontSize: 20,
+                  width: 120,
+                }}
+                returnKeyType="done"
+                />
+
+          </View>
+              
+              <View style={[Styles.yellowContainer, {
+              marginBottom: 30, 
+              paddingBottom: 15,
+              paddingTop: 15
+              }]}>
+                <TextInput 
+                value={expense}
+                onChangeText={(text) => {
+                  setExpense(text);
+                }}
+                placeholder={"Amount"}
+                keyboardType="phone-pad"
+                style={{
+                  textAlign: 'center',
+                  fontFamily: "InterExtraBold",
+                  fontSize: 20,
+                  width: 120,
+
+                }}
+                returnKeyType="done"
+                />
+              
+            </View>
+
+
+
           <TouchableOpacity 
           style={Styles.violetContainer}
-          onPress={() => setMoney('')}>
-            <Text>Submit</Text>
+          onPress={() => {
+            console.log("Name Submitted: ", name)
+            console.log("Expense Submitted: ", expense)
+            setName("")
+            setExpense("")
+          }}>
+            <Text style={[Styles.h1, {fontSize: 16, paddingTop: 5, height: 30}]}>Submit</Text>
           </TouchableOpacity>
 
-          <TextInput
-        value={inputValue}
-        onChangeText={handleTextChange}
-        placeholder="Type something..."
-        onSubmitEditing={handleSubmitEditing}
-        returnKeyType="done"
-      />
+          
 
       </SafeAreaView>
     );

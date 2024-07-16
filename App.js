@@ -4,14 +4,28 @@ import { HomeScreen, AboutScreen, AddScreen } from "./screens";
 import { Styles } from "./screens/Styling.js";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useFonts } from "expo-font";
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+
 
 const Tab = createMaterialBottomTabNavigator();
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
 
-const[fontsLoaded] = useFonts({
-  "InterExtraBold": require("./assets/fonts/Inter-ExtraBold.ttf"),
-})
+  const[fontsLoaded, error] = useFonts({
+    "InterExtraBold": require("./assets/fonts/Inter-ExtraBold.ttf"),
+  });
+
+  useEffect(() => {
+    if (fontsLoaded || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, error]);
+
+  if (!fontsLoaded && !error) {
+    return null;
+  }
   
   return (
       <NavigationContainer>
