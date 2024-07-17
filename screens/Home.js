@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { 
   Text, 
   StyleSheet, 
@@ -14,13 +14,42 @@ import PAST_EXPENSES from "./past_expenses.js";
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import SQLite from 'react-native-sqlite-storage';
 
 const CURRENCY_SYMBOL = "$ ";
+
+const db = SQLite.openDatabase(
+  {
+    name: "past_expense",
+    location: "../db/past_expense.db",
+  },
+  () => { },
+  error => {console.log("Database error: " + error)}
+);
 
 export default function HomeScreen() {
   var money = 2000; var expense = 433; 
   var expense_count = 0;
   const navigation = useNavigation();
+  
+  const [name, setName] = useState('');
+  const [amount, setAmount] = useState('');
+
+  useEffect(() => {
+    createTable();
+    getData();
+  }, [])
+
+  const createTable = () => {
+    db.transaction((tx) => {
+      tx.executeSql("CREATE TABLE IF NOT EXISTS Expense"
+                    + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + "expense_name TEXT, expense_amount REAL);");
+    })
+  }
+
+  
+
   return (
     <SafeAreaView style={Styles.container}>
         

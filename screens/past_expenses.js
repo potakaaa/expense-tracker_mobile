@@ -1,30 +1,22 @@
+
+
 const PAST_EXPENSES = [
     {
-        id: 1,
+        ID: 1,
         name: 'Snackbar',
         amount: '₱21'
-    },
-    {
-        id: 2,
-        name: 'Gas',
-        amount: '₱383'
-    },
-    {
-        id: 3,
-        name: 'Lunch',
-        amount: '₱521'
-    },
-    {
-        id: 4,
-        name: 'Stickers',
-        amount: '₱19'
-    },
-    {
-        id: 5,
-        name: 'Monitor',
-        amount: '₱5560'
     },
 
 ]
 
-export default PAST_EXPENSES;
+let i = 1;
+for (i = PAST_EXPENSES.length + 1; i < 5; i++) {
+    PAST_EXPENSES.push({
+        id: i,
+        name: `New Expense ${i}`,
+        amount: `₱${i * 10}`
+    });
+}
+
+console.log(PAST_EXPENSES)
+
