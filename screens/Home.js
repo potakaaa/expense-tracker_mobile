@@ -14,18 +14,9 @@ import PAST_EXPENSES from "./past_expenses.js";
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import SQLite from 'react-native-sqlite-storage';
+import * as SQLite from 'expo-sqlite';
 
 const CURRENCY_SYMBOL = "$ ";
-
-const db = SQLite.openDatabase(
-  {
-    name: "past_expense",
-    location: "../db/past_expense.db",
-  },
-  () => { },
-  error => {console.log("Database error: " + error)}
-);
 
 export default function HomeScreen() {
   var money = 2000; var expense = 433; 
@@ -34,21 +25,46 @@ export default function HomeScreen() {
   
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
+  const [expenses, setExpenses] = useState([]);
 
+  const db = SQLite.useSQLiteContext();
+  
   useEffect(() => {
-    createTable();
-    getData();
-  }, [])
-
-  const createTable = () => {
-    db.transaction((tx) => {
-      tx.executeSql("CREATE TABLE IF NOT EXISTS Expense"
-                    + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + "expense_name TEXT, expense_amount REAL);");
+    db.withTransactionAsync(async () => {
+      await getData();
     })
+  }, [db])
+
+  async function getData() {
+    const result = await db.getAllAsync(`SELECT * FROM Expense`)
+    console.log(result);
+    const parsedExpenses = result.rows._array.map((row) => ({
+      id: row.ID,
+      name: row.expense_name,
+      amount: row.expense_amount,
+    }));
+    setExpenses(parsedExpenses);
+    console.log(expenses);
   }
 
-  
+  const renderItem = ({ item }) => (
+    <View style={{
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      flexDirection: 'row',
+      }}>
+      <Text style={[Styles.h1, {
+        textAlign: "left", 
+        fontSize: 17,
+        marginLeft: 20,
+        }]}>{item.expense_name}</Text>
+      <Text style={[Styles.h1, {
+        textAlign: "right", 
+        fontSize: 17,
+        marginRight: 20,
+        }]}>{item.expense_amount}</Text>
+    </View>
+  );
 
   return (
     <SafeAreaView style={Styles.container}>
@@ -90,30 +106,7 @@ export default function HomeScreen() {
           <Text style={[Styles.h1]}>Past Spendings</Text>
         </View>
         <View style={Styles.rowContainer}>
-          <FlashList
-        data={PAST_EXPENSES}
-        estimatedItemSize={10}
-        estimatedListSize={{ height: 400, width: Dimensions.get("screen").width }}
-        renderItem={({item}) => (
-          <View style={{
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexDirection: 'row',
-            }}>
-            <Text style={[Styles.h1, {
-              textAlign: "left", 
-              fontSize: 17,
-              marginLeft: 20,
-              }]}>{item.name}</Text>
-            <Text style={[Styles.h1, {
-              textAlign: "right", 
-              fontSize: 17,
-              marginRight: 20,
-              }]}>{item.amount}</Text>
-          </View>
           
-        )}
-        />
         </View>
       </View>
 
@@ -122,18 +115,12 @@ export default function HomeScreen() {
       
       {/*
       <FlashList
-      data={PAST_EXPENSES}
-      estimatedItemSize={200}
-      
-      renderItem={({item}) => (
-        <View>
-          <View style={Styles.rowList}>
-            <Text style={[Styles.listText, {textAlign: "left"}]}>{item.name}</Text>
-            <Text style={[Styles.listText, {textAlign: "right"}]}>{item.amount}</Text>
-          </View>
-        </View>
-      )}
-      />
+        data={expenses}
+        estimatedItemSize={10}
+        estimatedListSize={{ height: 400, width: Dimensions.get("screen").width }}
+        keyExtractor={item => item.ID.toString()}
+        renderItem={renderItem}
+        />
       */}
     </SafeAreaView>
 

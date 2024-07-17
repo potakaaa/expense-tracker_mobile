@@ -25,10 +25,14 @@
     },
     "plugins": [
       [
-      "expo-font", {
-        "fonts" : ["./assets/fonts/Inter-ExtraBold.ttf"] 
-      }
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/Inter-ExtraBold.ttf"
+          ]
+        }
+      ],
+      "expo-asset"
     ]
-  ]
   }
 }

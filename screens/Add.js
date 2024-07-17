@@ -3,25 +3,11 @@ import { SafeAreaView, Text, View, Dimensions, TextInput, Touchable, TouchableOp
 import { Styles } from "./Styling.js";
 import { FlashList } from "@shopify/flash-list";
 import PAST_EXPENSES from "./past_expenses.js";
-import SQLite from 'react-native-sqlite-storage';
 
 export default function AddScreen() {
   const [money, setMoney] = useState("");
   const [name, setName] = useState("");
   const [expense, setExpense] = useState("");
-
-  const insertData = async () => {
-    try {
-      await db.transaction(async (tx) => {
-        await tx.executeSql(
-          "INSERT INTO Expenses (expense_name, "
-          +"expense_amount) VALUES (?, ?)", [name, age]
-        ); 
-      })
-    } catch (error) {
-      console.log("Set data error: " + error)
-    }
-  }
 
     return (
       <SafeAreaView style={Styles.container}>
