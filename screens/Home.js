@@ -14,9 +14,11 @@ import PAST_EXPENSES from "./past_expenses.js";
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import * as SQLite from 'expo-sqlite';
+import { useSQLiteContext } from "expo-sqlite/next";
+import * as SQLite from "expo-sqlite/legacy";
 
 const CURRENCY_SYMBOL = "$ ";
+const db = SQLite.openDatabase('expenses.db');
 
 export default function HomeScreen() {
   var money = 2000; var expense = 433; 
@@ -27,24 +29,32 @@ export default function HomeScreen() {
   const [amount, setAmount] = useState('');
   const [expenses, setExpenses] = useState([]);
 
-  const db = SQLite.useSQLiteContext();
+  
   
   useEffect(() => {
-    db.withTransactionAsync(async () => {
-      await getData();
+    createTable();
+    getData();
+  }, [])
+
+  async function createTable() {
+    db.transaction((tx) => {
+        tx.executeSql('CREATE TABLE IF NOT EXISTS expense_list'
+            + '(ID INTEGER PRIMARY KEY AUTOINCREMENT,'
+            + 'expense_name TEXT, expense_amount REAL)')
     })
-  }, [db])
+  }
 
   async function getData() {
-    const result = await db.getAllAsync(`SELECT * FROM Expense`)
-    console.log(result);
-    const parsedExpenses = result.rows._array.map((row) => ({
-      id: row.ID,
-      name: row.expense_name,
-      amount: row.expense_amount,
-    }));
-    setExpenses(parsedExpenses);
-    console.log(expenses);
+    db.transaction((tx) => {
+      tx.executeSql('SELECT * FROM expense_list',
+          null,
+          (txObj, result) => {
+            setExpenses(result.rows._array)
+            console.log(result.rows._array)
+          },
+          (txObj, error) => console.log(error)
+      )
+  })
   }
 
   const renderItem = ({ item }) => (
@@ -106,7 +116,13 @@ export default function HomeScreen() {
           <Text style={[Styles.h1]}>Past Spendings</Text>
         </View>
         <View style={Styles.rowContainer}>
-          
+          <FlashList
+          data={expenses}
+          estimatedItemSize={10}
+          estimatedListSize={{ height: 400, width: Dimensions.get("screen").width }}
+          keyExtractor={item => item.ID.toString()}
+          renderItem={renderItem}
+          />
         </View>
       </View>
 
@@ -114,13 +130,7 @@ export default function HomeScreen() {
       
       
       {/*
-      <FlashList
-        data={expenses}
-        estimatedItemSize={10}
-        estimatedListSize={{ height: 400, width: Dimensions.get("screen").width }}
-        keyExtractor={item => item.ID.toString()}
-        renderItem={renderItem}
-        />
+      
       */}
     </SafeAreaView>
 
