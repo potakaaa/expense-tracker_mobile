@@ -10,15 +10,13 @@ import {
 } from 'react-native';
 import { Styles } from "./Styling.js";
 import { FlashList } from "@shopify/flash-list";
-import PAST_EXPENSES from "./past_expenses.js";
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSQLiteContext } from "expo-sqlite/next";
-import * as SQLite from "expo-sqlite/legacy";
+import { LoadingScreen } from "./loading.js";
+import * as SQLite from 'expo-sqlite/legacy';
 
 const CURRENCY_SYMBOL = "$ ";
-const db = SQLite.openDatabase('expenses.db');
 
 export default function HomeScreen() {
   var money = 2000; var expense = 433; 
@@ -29,33 +27,34 @@ export default function HomeScreen() {
   const [amount, setAmount] = useState('');
   const [expenses, setExpenses] = useState([]);
 
-  
-  
+  const[db, setDb] = useState(SQLite.openDatabase('expense.db'));
+  const[isLoaded, setLoaded] = useState(false);
+
   useEffect(() => {
-    createTable();
-    getData();
-  }, [])
+    db.transaction(tx => {
+      tx.executeSql('CREATE TABLE IF NOT EXISTS exp_list (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, amount REAL NOT NULL)')
+    });
 
-  async function createTable() {
-    db.transaction((tx) => {
-        tx.executeSql('CREATE TABLE IF NOT EXISTS expense_list'
-            + '(ID INTEGER PRIMARY KEY AUTOINCREMENT,'
-            + 'expense_name TEXT, expense_amount REAL)')
-    })
-  }
+    db.transaction(tx => {
+      tx.executeSql('SELECT * FROM exp_list', null,
+        (txObj, resultSet) => {
+          setExpenses(resultSet.rows._array)
+          console.log(resultSet.rows._array);
+        },
+        (txObj, error) => console.log(error)
+      );
+    });
 
-  async function getData() {
-    db.transaction((tx) => {
-      tx.executeSql('SELECT * FROM expense_list',
-          null,
-          (txObj, result) => {
-            setExpenses(result.rows._array)
-            console.log(result.rows._array)
-          },
-          (txObj, error) => console.log(error)
-      )
-  })
+    setLoaded(true);
+
+  }, [db]);
+
+  if (!isLoaded) {
+    LoadingScreen;
   }
+  
+
+
 
   const renderItem = ({ item }) => (
     <View style={{
@@ -67,12 +66,12 @@ export default function HomeScreen() {
         textAlign: "left", 
         fontSize: 17,
         marginLeft: 20,
-        }]}>{item.expense_name}</Text>
+        }]}>{item.name}</Text>
       <Text style={[Styles.h1, {
         textAlign: "right", 
         fontSize: 17,
         marginRight: 20,
-        }]}>{item.expense_amount}</Text>
+        }]}>{item.amount}</Text>
     </View>
   );
 
@@ -120,7 +119,7 @@ export default function HomeScreen() {
           data={expenses}
           estimatedItemSize={10}
           estimatedListSize={{ height: 400, width: Dimensions.get("screen").width }}
-          keyExtractor={item => item.ID.toString()}
+          keyExtractor={item => item.id.toString()}
           renderItem={renderItem}
           />
         </View>

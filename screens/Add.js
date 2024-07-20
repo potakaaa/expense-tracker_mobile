@@ -1,13 +1,43 @@
 import React, { useState, useEffect } from "react";
 import { SafeAreaView, Text, View, Dimensions, TextInput, Touchable, TouchableOpacity } from 'react-native';
 import { Styles } from "./Styling.js";
-import { FlashList } from "@shopify/flash-list";
-import PAST_EXPENSES from "./past_expenses.js";
+import { LoadingScreen } from "./loading.js";
+import * as SQLite from 'expo-sqlite/legacy';
 
 export default function AddScreen() {
   const [money, setMoney] = useState("");
   const [name, setName] = useState("");
   const [expense, setExpense] = useState("");
+
+  const [expenseArr, setExpenseArr] = useState([]);
+
+  const[db, setDb] = useState(SQLite.openDatabase('expense.db'));
+  const[isLoaded, setLoaded] = useState(false);
+
+  const [currentName, setCurrentName] = useState("");
+  const [currentAmount, setCurrentAmount] = useState("");
+
+
+  const addExpenseDB = () => {
+    db.transaction(tx => {
+      tx.executeSql('INSERT INTO exp_list (name, amount) values (?, ?)', [currentName, currentAmount],
+        (txObj, resultSet) => {
+          let existingExpenses = [...expenseArr];
+          existingExpenses.push({ id: resultSet.insertId, name: currentName, amount: currentAmount });
+          setExpenseArr(existingExpenses);
+          setCurrentName("");
+          setCurrentAmount("");
+          console.log(expenseArr);
+        },
+        (txObj, error) => console.log("INSERT ERROR: " + error)
+      );
+    });
+  }
+
+
+  if (!isLoaded) {
+    LoadingScreen;
+  }
 
     return (
       <SafeAreaView style={Styles.container}>
@@ -97,6 +127,9 @@ export default function AddScreen() {
           onPress={() => {
             console.log("Name Submitted: ", name)
             console.log("Expense Submitted: ", expense)
+            setCurrentName(name)
+            setCurrentAmount(expense)
+            addExpenseDB()
             setName("")
             setExpense("")
           }}>

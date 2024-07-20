@@ -1,49 +1,66 @@
-import * as SQLite from 'expo-sqlite/legacy';
-import { useState } from "react";
+import { enablePromise, openDatabase, SQLiteDatabase } from 'react-native-sqlite-storage';
 
-const db = SQLite.openDatabase('./db/expenses.db');
-export const [expenseArr, setExpensesArr] = useState([])
-export const [nameArr, setNameArr] = useState([])
-export const [listArr, setArr] = useState([])
+const tableName = 'exp_list';
 
+enablePromise(true);
 
-export default function createTable() {
-    db.transaction((tx) => {
-        tx.executeSql('CREATE TABLE IF NOT EXISTS expense_list'
-            + '(ID INTEGER PRIMARY KEY AUTOINCREMENT,'
-            + 'expense_name TEXT, expense_amount REAL)')
-    })
-}
+/**
+ * @typedef {Object} expenses_list
+ * @property {string} exp_name - The ID of the to-do item.
+ * @property {number} exp_amount - The value of the to-do item.
+ */
 
-export default function addExpense() {
-    db.transaction((tx) => {
-        tx.executeSql("INSERT INTO expense_list (expense_name, expense_amount)"
-            + " VALUES (?, ?)",
-            [exp_name, exp_amount],
-            (txObj, result) => {
-                let prevExpName = [...nameArr];
-                let prevExpAmount = [...amountArr];
-                let listArr = [...listArr]
-                prevExpName.push({id: result.insertId, 
-                    expense_name: exp_name});
-                prevExpName.push({id: result.insertId, 
-                    expense_amount: exp_amount});
-                listArr.push({id: result.insertId,
-                    expense_name: exp_name, 
-                    expense_amount: exp_amount})
-                setArr(listArr)
-            },
-            (txObj, error) => console.log(error)
-        )
-    })
-}
+/**
+ * Retrieves to-do items from the database.
+ * @param {Object} db - The database connection.
+ * @returns {Promise<expenses_list[]>} - A promise that resolves to an array of to-do items.
+ */
 
-export default function getExpense() {
-    db.transaction((tx) => {
-        tx.executeSql('SELECT * FROM expense_list',
-            null,
-            (txObj, result) => setExpensesArr(result.rows._array),
-            (txObj, error) => console.log(error)
-        )
-    })
-}
+export const getDBConnection = async () => {
+  return openDatabase({ name: 'new_expenses.db', location: 'default' });
+};
+
+export const createTable = async (db) => {
+  // create table if not exists
+  const query = `CREATE TABLE IF NOT EXISTS ${tableName}(
+        ID PRIMARY KEY AUTOINCREMENT, expense_name TEXT NOT NULL, expense_amount REAL NOT NULL
+    );`;
+
+  await db.executeSql(query);
+};
+
+export const getTodoItems = async (db) => {
+  try {
+    /** @type {expenses_list[]} */
+    const expenses_list = [];
+    const results = await db.executeSql(`SELECT * FROM ${tableName}`);
+    results.forEach(result => {
+      for (let index = 0; index < result.rows.length; index++) {
+        expenses_list.push(result.rows.item(index));
+      }
+    });
+    return expenses_list;
+  } catch (error) {
+    console.error(error);
+    throw new Error('Failed to get Expenses List!!!');
+  }
+};
+
+export const saveTodoItems = async (db, expenses) => {
+  const insertQuery =
+    `INSERT OR REPLACE INTO ${tableName}(ID, expense_amount, expense_name) values` +
+    todoItems.map(i => `(${i.id}, '${i.value}')`).join(',');
+
+  return db.executeSql(insertQuery);
+};
+
+export const deleteTodoItem = async (db, id) => {
+  const deleteQuery = `DELETE from ${tableName} where rowid = ${id}`;
+  await db.executeSql(deleteQuery);
+};
+
+export const deleteTable = async (db) => {
+  const query = `drop table ${tableName}`;
+
+  await db.executeSql(query);
+};

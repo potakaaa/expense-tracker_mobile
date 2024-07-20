@@ -7,15 +7,9 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useFonts } from "expo-font";
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
-import * as FileSystem from 'expo-file-system';
-import { Asset } from 'expo-asset';
-import { SQLiteProvider } from 'expo-sqlite/next';
 import * as SQLite from 'expo-sqlite/legacy';
-import { Suspense } from 'react';
 
-const loadDatabase = async () => {
-  const db = await SQLite.openDatabase('./db/past_expense.db');
-};
+
 
 const Tab = createMaterialBottomTabNavigator();
 SplashScreen.preventAutoHideAsync();
@@ -27,11 +21,24 @@ export default function App() {
   });
   const[isLoaded, setLoaded] = useState(false);
 
-  useEffect(() => {
-    loadDatabase()
-      .then(() => setLoaded(true))
-      .catch((e) => console.log(e));
-  }, []);
+  const [currentName, setCurrentName] = useState("");
+  const [currentAmount, setCurrentAmount] = useState("");
+  const [expenses, setExpenses] = useState([]);
+
+  const addName = () => {
+    db.transaction(tx => {
+      tx.executeSql('INSERT INTO exp_list (name, amount) values (?)', [currentName, currentAmount],
+        (txObj, resultSet) => {
+          let existingExpenses = [...expenses];
+          existingExpenses.push({ id: resultSet.insertId, name: currentName, amount: currentAmount });
+          setNames(existingExpenses);
+          setCurrentName("");
+          setCurrentAmount("");
+        },
+        (txObj, error) => console.log(error)
+      );
+    });
+  }
 
   if (fontsLoaded || error) {
     SplashScreen.hideAsync();
@@ -42,7 +49,7 @@ export default function App() {
   }
 
   if (!isLoaded) {
-    LoadingScreen()
+    LoadingScreen();
   }
   
   return (
