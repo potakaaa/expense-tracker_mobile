@@ -6,7 +6,7 @@ import {
   TouchableOpacity, 
   ScrollView,
   useWindowDimensions,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 import { Styles } from "./Styling.js";
 import { FlashList } from "@shopify/flash-list";
@@ -15,6 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LoadingScreen } from "./loading.js";
 import * as SQLite from 'expo-sqlite/legacy';
+import { db, expenses, setExpenses } from "./test.js";
 
 const CURRENCY_SYMBOL = "$ ";
 
@@ -25,14 +26,13 @@ export default function HomeScreen() {
   
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
-  const [expenses, setExpenses] = useState([]);
 
-  const[db, setDb] = useState(SQLite.openDatabase('expense.db'));
-  const[isLoaded, setLoaded] = useState(false);
+  const [isLoaded, setLoaded] = useState(false)
 
   useEffect(() => {
+
     db.transaction(tx => {
-      tx.executeSql('CREATE TABLE IF NOT EXISTS exp_list (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, amount REAL NOT NULL)')
+      tx.executeSql('CREATE TABLE IF NOT EXISTS exp_list (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, amount REAL)')
     });
 
     db.transaction(tx => {
@@ -52,28 +52,23 @@ export default function HomeScreen() {
   if (!isLoaded) {
     LoadingScreen;
   }
-  
-
-
 
   const renderItem = ({ item }) => (
-    <View style={{
-      alignItems: 'center',
+    <View style={{alignItems: 'center',
       justifyContent: 'space-between',
       flexDirection: 'row',
       }}>
-      <Text style={[Styles.h1, {
-        textAlign: "left", 
+      <Text style={[Styles.h1, { textAlign: "left", 
         fontSize: 17,
         marginLeft: 20,
         }]}>{item.name}</Text>
-      <Text style={[Styles.h1, {
-        textAlign: "right", 
+      <Text style={[Styles.h1, { textAlign: "right", 
         fontSize: 17,
         marginRight: 20,
         }]}>{item.amount}</Text>
     </View>
   );
+
 
   return (
     <SafeAreaView style={Styles.container}>
@@ -114,13 +109,13 @@ export default function HomeScreen() {
         <View style={Styles.violetContainer}>
           <Text style={[Styles.h1]}>Past Spendings</Text>
         </View>
-        <View style={Styles.rowContainer}>
+        <View style={[Styles.rowContainer, {height: 225}]}>
           <FlashList
-          data={expenses}
-          estimatedItemSize={10}
-          estimatedListSize={{ height: 400, width: Dimensions.get("screen").width }}
-          keyExtractor={item => item.id.toString()}
-          renderItem={renderItem}
+            data={expenses}
+            estimatedItemSize={15}
+            scrollEnabled={true}
+            keyExtractor={item => item.id.toString()}
+            renderItem={renderItem}
           />
         </View>
       </View>
@@ -129,7 +124,13 @@ export default function HomeScreen() {
       
       
       {/*
-      
+        <FlashList
+          data={expenses}
+          estimatedItemSize={10}
+          estimatedListSize={{ height: 400, width: Dimensions.get("screen").width }}
+          keyExtractor={item => item.id.toString()}
+          renderItem={renderItem}
+        />
       */}
     </SafeAreaView>
 

@@ -8,37 +8,36 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import * as SQLite from 'expo-sqlite/legacy';
-
-
+import { db, expenses, setExpenses } from "./screens/test.js";
 
 const Tab = createMaterialBottomTabNavigator();
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
 
-  const[fontsLoaded, error] = useFonts({
-    "InterExtraBold": require("./assets/fonts/Inter-ExtraBold.ttf"),
-  });
-  const[isLoaded, setLoaded] = useState(false);
-
-  const [currentName, setCurrentName] = useState("");
-  const [currentAmount, setCurrentAmount] = useState("");
-  const [expenses, setExpenses] = useState([]);
-
-  const addName = () => {
+  useEffect(() => {
     db.transaction(tx => {
-      tx.executeSql('INSERT INTO exp_list (name, amount) values (?)', [currentName, currentAmount],
+      tx.executeSql('CREATE TABLE IF NOT EXISTS exp_list (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, amount REAL)')
+    });
+
+    db.transaction(tx => {
+      tx.executeSql('SELECT * FROM exp_list', null,
         (txObj, resultSet) => {
-          let existingExpenses = [...expenses];
-          existingExpenses.push({ id: resultSet.insertId, name: currentName, amount: currentAmount });
-          setNames(existingExpenses);
-          setCurrentName("");
-          setCurrentAmount("");
+          setExpenses(resultSet.rows._array)
+          console.log(resultSet.rows._array);
         },
         (txObj, error) => console.log(error)
       );
     });
-  }
+
+    setLoaded(true);
+
+  }, [db]);
+
+  const[fontsLoaded, error] = useFonts({
+    "InterExtraBold": require("./assets/fonts/Inter-ExtraBold.ttf"),
+  });
+  const[isLoaded, setLoaded] = useState(false);
 
   if (fontsLoaded || error) {
     SplashScreen.hideAsync();
@@ -49,7 +48,7 @@ export default function App() {
   }
 
   if (!isLoaded) {
-    LoadingScreen();
+    LoadingScreen;
   }
   
   return (

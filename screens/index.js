@@ -2,6 +2,7 @@ import HomeScreen from './Home';
 import AddScreen from './Add';
 import AboutScreen from './About';
 import LoadingScreen from './loading';
+import States from './test.js';
 
 
 export {
@@ -9,4 +10,5 @@ export {
     AddScreen,
     AboutScreen,
     LoadingScreen,
+    States
 }
