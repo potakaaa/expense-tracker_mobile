@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { 
   Text, 
   StyleSheet, 
@@ -15,7 +15,8 @@ import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LoadingScreen } from "./loading.js";
 import * as SQLite from 'expo-sqlite/legacy';
-import { db, expenses, setExpenses } from "./test.js";
+import { db, expenses, setExpenses, UpdateContext } from "./exports.js";
+
 
 const CURRENCY_SYMBOL = "$ ";
 
@@ -23,7 +24,8 @@ export default function HomeScreen() {
   var money = 2000; var expense = 433; 
   var expense_count = 0;
   const navigation = useNavigation();
-  
+  const { updateCounter } = useContext(UpdateContext);
+
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
 
@@ -43,6 +45,7 @@ export default function HomeScreen() {
         },
         (txObj, error) => console.log(error)
       );
+      console.log(`Update counter: ${updateCounter}`);
     });
 
     setLoaded(true);
@@ -109,10 +112,10 @@ export default function HomeScreen() {
         <View style={Styles.violetContainer}>
           <Text style={[Styles.h1]}>Past Spendings</Text>
         </View>
-        <View style={[Styles.rowContainer, {height: 225}]}>
+        <View style={[Styles.rowContainer, {maxHeight: 225}]}>
           <FlashList
             data={expenses}
-            estimatedItemSize={15}
+            estimatedItemSize={100}
             scrollEnabled={true}
             keyExtractor={item => item.id.toString()}
             renderItem={renderItem}

@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { SafeAreaView, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import { Styles } from "./Styling.js";
 import { LoadingScreen } from "./loading.js";
 import * as SQLite from 'expo-sqlite/legacy';
-import { db, expenses, setExpenses } from "./test.js";
+import { db, expenses, setExpenses, UpdateContext } from "./exports.js";
 
-export default function AddScreen() {
+
+export default function AddScreen({navigation}) {
   const [money, setMoney] = useState("");
   const [currentName, setCurrentName] = useState("");
   const [currentExpense, setCurrentExpense] = useState("");
 
   const [isLoaded, setLoaded] = useState(false)
+
+  const { updateHomeScreen } = useContext(UpdateContext);
   
 
   useEffect(() => {
@@ -40,6 +43,7 @@ export default function AddScreen() {
             console.log("Expense Submitted: ", currentExpense)
             setCurrentName(undefined);
             setCurrentExpense(undefined);
+            updateHomeScreen();
           
           },
           (txObj, error) => console.log(error)

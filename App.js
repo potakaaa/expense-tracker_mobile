@@ -6,14 +6,20 @@ import { Styles } from "./screens/Styling.js";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useFonts } from "expo-font";
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, createContext } from 'react';
 import * as SQLite from 'expo-sqlite/legacy';
-import { db, expenses, setExpenses } from "./screens/test.js";
+import { db, expenses, setExpenses, UpdateContext } from "./screens/exports.js";
 
 const Tab = createMaterialBottomTabNavigator();
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
+
+  const [updateCounter, setUpdateCounter] = useState(0);
+
+  const updateHomeScreen = () => {
+    setUpdateCounter(updateCounter + 1);
+  };
 
   useEffect(() => {
     db.transaction(tx => {
@@ -52,49 +58,52 @@ export default function App() {
   }
   
   return (
-    <NavigationContainer>        
-      <Tab.Navigator
-      initialRouteName="Home"
-      activeColor="#3e2465" 
-      inactiveColor="#c99c06"
-      title="Home"
-      backBehavior="history"
-      
-      barStyle={{ 
-        marginLeft:10, 
-        marginRight:10,
-        borderRadius: 50,
-      }}
-      >
-        <Tab.Screen name="Home" 
-        component={HomeScreen}
-        options={{
-          tabBarLabel: 'Home',
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="home" color={color} size={26} />
-          ),
+    <UpdateContext.Provider value={{ updateCounter, updateHomeScreen }}>
+      <NavigationContainer>        
+        <Tab.Navigator
+        initialRouteName="Home"
+        activeColor="#3e2465" 
+        inactiveColor="#c99c06"
+        title="Home"
+        backBehavior="history"
+        
+        barStyle={{ 
+          marginLeft:10, 
+          marginRight:10,
+          borderRadius: 50,
         }}
-        />
-        <Tab.Screen name="Add" 
-        component={AddScreen}
-        options={{
-          tabBarLabel: 'Add',
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="plus-box" color={color} size={26} />
-          ),
-        }}
-        />
-        <Tab.Screen name="About" 
-        component={AboutScreen} 
-        options={{
-          tabBarLabel: 'About',
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="information" color={color} size={26} />
-          ),
-        }}
-        />
-        </Tab.Navigator>      
-      </NavigationContainer>
+        >
+          <Tab.Screen name="Home" 
+          component={HomeScreen}
+          initialParams={{ itemId: 1 }}
+          options={{
+            tabBarLabel: 'Home',
+            tabBarIcon: ({ color }) => (
+              <MaterialCommunityIcons name="home" color={color} size={26} />
+            ),
+          }}
+          />
+          <Tab.Screen name="Add" 
+          component={AddScreen}
+          options={{
+            tabBarLabel: 'Add',
+            tabBarIcon: ({ color }) => (
+              <MaterialCommunityIcons name="plus-box" color={color} size={26} />
+            ),
+          }}
+          />
+          <Tab.Screen name="About" 
+          component={AboutScreen} 
+          options={{
+            tabBarLabel: 'About',
+            tabBarIcon: ({ color }) => (
+              <MaterialCommunityIcons name="information" color={color} size={26} />
+            ),
+          }}
+          />
+          </Tab.Navigator>      
+        </NavigationContainer>
+      </UpdateContext.Provider>
  
 
     
