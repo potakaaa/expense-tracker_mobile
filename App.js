@@ -7,7 +7,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useFonts } from "expo-font";
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState, createContext } from 'react';
-import * as SQLite from 'expo-sqlite/legacy';
 import { db, expenses, setExpenses, UpdateContext } from "./screens/exports.js";
 
 const Tab = createMaterialBottomTabNavigator();
@@ -23,7 +22,7 @@ export default function App() {
 
   useEffect(() => {
     db.transaction(tx => {
-      tx.executeSql('CREATE TABLE IF NOT EXISTS exp_list (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, amount REAL)')
+      tx.executeSql('CREATE TABLE IF NOT EXISTS exp_list (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, amount REAL NOT NULL)')
     });
 
     db.transaction(tx => {

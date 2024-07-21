@@ -1,11 +1,8 @@
 import React, { useEffect, useState, useContext } from "react";
 import { 
   Text, 
-  StyleSheet, 
   View, 
   TouchableOpacity, 
-  ScrollView,
-  useWindowDimensions,
   Dimensions,
 } from 'react-native';
 import { Styles } from "./Styling.js";
@@ -14,15 +11,15 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LoadingScreen } from "./loading.js";
-import * as SQLite from 'expo-sqlite/legacy';
-import { db, expenses, setExpenses, UpdateContext } from "./exports.js";
-
+import { 
+  db, expenses, setExpenses, 
+  UpdateContext, totalMoney, setTotalMoney,
+  totalExpense, setTotalExpense, currentMoney
+ } from "./exports.js";
 
 const CURRENCY_SYMBOL = "$ ";
 
 export default function HomeScreen() {
-  var money = 2000; var expense = 433; 
-  var expense_count = 0;
   const navigation = useNavigation();
   const { updateCounter } = useContext(UpdateContext);
 
@@ -31,10 +28,15 @@ export default function HomeScreen() {
 
   const [isLoaded, setLoaded] = useState(false)
 
+  const [ moneyTotal, setMoneyTotal ] = useState()
+
+
   useEffect(() => {
 
+    setMoneyTotal(totalMoney)
+
     db.transaction(tx => {
-      tx.executeSql('CREATE TABLE IF NOT EXISTS exp_list (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, amount REAL)')
+      tx.executeSql('CREATE TABLE IF NOT EXISTS exp_list (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, amount REAL NOT NULL)')
     });
 
     db.transaction(tx => {
@@ -47,7 +49,7 @@ export default function HomeScreen() {
       );
       console.log(`Update counter: ${updateCounter}`);
     });
-
+    
     setLoaded(true);
 
   }, [db]);
@@ -79,7 +81,7 @@ export default function HomeScreen() {
       <Text style={Styles.h1}>Money</Text>
       <View style={[Styles.yellowContainer, {marginBottom: 50}]}>
         <View style={Styles.rowContainer}>
-          <Text style={[Styles.h1, {fontSize: 25}]}>{CURRENCY_SYMBOL + 2000}</Text>
+          <Text style={[Styles.h1, {fontSize: 25}]}>{CURRENCY_SYMBOL + totalMoney}</Text>
           <TouchableOpacity onPress={() => {
             console.log("Add pressed")
             console.log(Dimensions.get('screen'))
@@ -93,7 +95,7 @@ export default function HomeScreen() {
       <Text style={Styles.h1}>Expenses</Text>
       <View style={[Styles.yellowContainer, {marginBottom: 70}]}>
         <View style={Styles.rowContainer}>
-          <Text style={[Styles.h1, {fontSize: 25}]}>{CURRENCY_SYMBOL + 330}</Text>
+          <Text style={[Styles.h1, {fontSize: 25}]}>{CURRENCY_SYMBOL + totalExpense}</Text>
           <TouchableOpacity onPress={() => {
             console.log("Add pressed")
             navigation.navigate("Add")

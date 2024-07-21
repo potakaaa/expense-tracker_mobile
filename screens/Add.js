@@ -2,12 +2,15 @@ import React, { useState, useEffect, useContext } from "react";
 import { SafeAreaView, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import { Styles } from "./Styling.js";
 import { LoadingScreen } from "./loading.js";
-import * as SQLite from 'expo-sqlite/legacy';
-import { db, expenses, setExpenses, UpdateContext } from "./exports.js";
-
+import { db, expenses, 
+  setExpenses, UpdateContext, 
+  setCurrentMoney, setTotalMoney,
+  totalMoney, currentMoney,
+  totalExpense, setTotalExpense
+} from "./exports.js";
 
 export default function AddScreen({navigation}) {
-  const [money, setMoney] = useState("");
+  const [money, setMoney] = useState(0.0);
   const [currentName, setCurrentName] = useState("");
   const [currentExpense, setCurrentExpense] = useState("");
 
@@ -18,7 +21,7 @@ export default function AddScreen({navigation}) {
 
   useEffect(() => {
     db.transaction(tx => {
-      tx.executeSql('CREATE TABLE IF NOT EXISTS exp_list (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, amount REAL)')
+      tx.executeSql('CREATE TABLE IF NOT EXISTS exp_list (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, amount REAL NOT NULL)')
     });
     setLoaded(true);
     console.log(expenses)
@@ -41,13 +44,14 @@ export default function AddScreen({navigation}) {
             setExpenses(existingExpenses)
             console.log("Name Submitted: ", currentName)
             console.log("Expense Submitted: ", currentExpense)
-            setCurrentName(undefined);
-            setCurrentExpense(undefined);
-            updateHomeScreen();
-          
           },
           (txObj, error) => console.log(error)
         );
+        setTotalExpense(parseFloat(currentExpense) + parseFloat(totalExpense));
+        
+        setCurrentName(undefined);
+        setCurrentExpense(undefined);
+        updateHomeScreen();
       });
   }
 
@@ -66,7 +70,14 @@ export default function AddScreen({navigation}) {
           }}
           onSubmitEditing={() => {
             console.log("Money Submitted: ", money)
-            setMoney("")
+            setCurrentMoney(money)
+            let temp_totalMoney = 0.0
+            temp_totalMoney = parseFloat(currentMoney) + parseFloat(totalMoney)
+            console.log(`${currentMoney} + ${totalMoney}`)
+            setTotalMoney(temp_totalMoney)
+            console.log(`${totalMoney}`)
+            
+            setMoney(0.0)
           }}
           placeholder={"Amount"}
           keyboardType="phone-pad"
