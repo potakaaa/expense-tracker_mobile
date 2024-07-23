@@ -4,7 +4,7 @@ import { createContext } from 'react';
 let expenses = []
 const UpdateContext = createContext();
 
-const db = SQLite.openDatabase('eXAMplE.db');
+const db = SQLite.openDatabase('ExAMplE.db');
 
 const setExpenses = (newExpenses) => {
   expenses = [...newExpenses]

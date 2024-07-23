@@ -48,6 +48,7 @@ export default function AddScreen({navigation}) {
           (txObj, error) => console.log(error)
         );
         setTotalExpense(parseFloat(currentExpense) + parseFloat(totalExpense));
+        setTotalMonet(parseFloat(totalMoney) - parseFloat(totalExpense));
         
         setCurrentName(undefined);
         setCurrentExpense(undefined);

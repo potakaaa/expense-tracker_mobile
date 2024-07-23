@@ -17,7 +17,7 @@ import {
   totalExpense, setTotalExpense, currentMoney
  } from "./exports.js";
 
-const CURRENCY_SYMBOL = "$ ";
+const CURRENCY_SYMBOL = "₱ ";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -28,12 +28,7 @@ export default function HomeScreen() {
 
   const [isLoaded, setLoaded] = useState(false)
 
-  const [ moneyTotal, setMoneyTotal ] = useState()
-
-
   useEffect(() => {
-
-    setMoneyTotal(totalMoney)
 
     db.transaction(tx => {
       tx.executeSql('CREATE TABLE IF NOT EXISTS exp_list (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, amount REAL NOT NULL)')
@@ -81,7 +76,7 @@ export default function HomeScreen() {
       <Text style={Styles.h1}>Money</Text>
       <View style={[Styles.yellowContainer, {marginBottom: 50}]}>
         <View style={Styles.rowContainer}>
-          <Text style={[Styles.h1, {fontSize: 25}]}>{CURRENCY_SYMBOL + totalMoney}</Text>
+          <Text style={[Styles.h1, {fontSize: 25}]}>{CURRENCY_SYMBOL + parseFloat(totalMoney)}</Text>
           <TouchableOpacity onPress={() => {
             console.log("Add pressed")
             console.log(Dimensions.get('screen'))
@@ -95,7 +90,7 @@ export default function HomeScreen() {
       <Text style={Styles.h1}>Expenses</Text>
       <View style={[Styles.yellowContainer, {marginBottom: 70}]}>
         <View style={Styles.rowContainer}>
-          <Text style={[Styles.h1, {fontSize: 25}]}>{CURRENCY_SYMBOL + totalExpense}</Text>
+          <Text style={[Styles.h1, {fontSize: 25}]}>{CURRENCY_SYMBOL + parseFloat(totalExpense)}</Text>
           <TouchableOpacity onPress={() => {
             console.log("Add pressed")
             navigation.navigate("Add")
