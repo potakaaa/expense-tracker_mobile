@@ -7,7 +7,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useFonts } from "expo-font";
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState, createContext } from 'react';
-import { db, expenses, setExpenses, UpdateContext } from "./screens/exports.js";
+import { db, expenses, setExpenses, setUserAcc, UpdateContext } from "./screens/exports.js";
 
 const Tab = createMaterialBottomTabNavigator();
 SplashScreen.preventAutoHideAsync();
@@ -20,9 +20,30 @@ export default function App() {
     setUpdateCounter(updateCounter + 1);
   };
 
+  const checkIfRowExists = (id, callback) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'SELECT EXISTS(SELECT 1 FROM user_acc WHERE id = ?) AS exist',
+        [id],
+        (tx, results) => {
+          const rowExists = results.rows.item(0).exist === 1;
+          callback(rowExists);
+        },
+        error => {
+          console.error('Error checking if row exists: ', error);
+          callback(false);
+        }
+      );
+    });
+  };
+
   useEffect(() => {
     db.transaction(tx => {
       tx.executeSql('CREATE TABLE IF NOT EXISTS exp_list (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, amount REAL NOT NULL)')
+    });
+
+    db.transaction(tx => {
+      tx.executeSql('CREATE TABLE IF NOT EXISTS user_acc (id INTEGER PRIMARY KEY AUTOINCREMENT, money REAL NOT NULL, expense REAL NOT NULL)')
     });
 
     db.transaction(tx => {
@@ -33,6 +54,32 @@ export default function App() {
         },
         (txObj, error) => console.log(error)
       );
+    });
+
+    db.transaction(tx => {
+      tx.executeSql('SELECT * FROM user_acc', null,
+        (txObj, resultSet) => {
+          setUserAcc(resultSet.rows._array)
+          console.log("User Account: " , resultSet.rows._array);
+        },
+        (txObj, error) => console.log(error)
+      );
+    });
+
+    const idToCheck = 1;
+    checkIfRowExists(idToCheck, rowExists => {
+      if (!rowExists) {
+        db.transaction((tx) => {
+          console.log("2")
+          tx.executeSql('INSERT INTO user_acc (money, expense) values (?, ?)', [0, 0],
+            (txObj, resultSet) => {
+              console.log("3")
+              console.log("Money Submitted: ", 0)
+            },
+            (txObj, error) => console.log(error)
+          );
+      })
+      } 
     });
 
     setLoaded(true);

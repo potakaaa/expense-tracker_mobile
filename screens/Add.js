@@ -6,7 +6,13 @@ import { db, expenses,
   setExpenses, UpdateContext, 
   setCurrentMoney, setTotalMoney,
   totalMoney, currentMoney,
-  totalExpense, setTotalExpense
+  totalExpense, setTotalExpense,
+  userMoney,
+  userAcc,
+  setUserAcc,
+  userExpense,
+  setUserMoney,
+  setUserExpense
 } from "./exports.js";
 
 export default function AddScreen({navigation}) {
@@ -23,6 +29,11 @@ export default function AddScreen({navigation}) {
     db.transaction(tx => {
       tx.executeSql('CREATE TABLE IF NOT EXISTS exp_list (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, amount REAL NOT NULL)')
     });
+
+    db.transaction(tx => {
+      tx.executeSql('CREATE TABLE IF NOT EXISTS user_acc (id INTEGER PRIMARY KEY AUTOINCREMENT, money REAL NOT NULL, expense REAL NOT NULL)')
+    });
+
     setLoaded(true);
     console.log(expenses)
 
@@ -48,13 +59,101 @@ export default function AddScreen({navigation}) {
           (txObj, error) => console.log(error)
         );
         setTotalExpense(parseFloat(currentExpense) + parseFloat(totalExpense));
-        setTotalMonet(parseFloat(totalMoney) - parseFloat(totalExpense));
+        userAcc[0][2] = totalExpense
+        setTotalMoney(parseFloat(totalMoney) - parseFloat(totalExpense));
+        userAcc[0][1] = totalMoney;
+        setUserExpense(totalExpense)
         
         setCurrentName(undefined);
         setCurrentExpense(undefined);
         updateHomeScreen();
+        const idToCheck = 1;
+        checkIfRowExists(idToCheck, rowExists => {
+          if (rowExists) {
+            updateAcc_expense();
+            console.log("User expense: " , userExpense)
+          } else {
+            console.log('The row does not exist.');
+            addNewUserAcc()
+          }
+        });
+
+        
       });
   }
+
+  const updateAcc_money = () => {
+    console.log("1")
+      db.transaction((tx) => {
+        console.log("2")
+        tx.executeSql('UPDATE user_acc SET money = ? WHERE id = 1', [userMoney],
+          (txObj, resultSet) => {
+            if (resultSet.rowsAffected > 0) {
+              console.log("3")
+              let exisUserAcc = [...userAcc]
+              exisUserAcc[0][1] = userMoney
+              setUserAcc(exisUserAcc);
+              console.log("New money Submitted: ", userMoney)
+            }
+          },
+          (txObj, error) => console.log(error)
+        );
+      });
+  }
+
+  const updateAcc_expense = () => {
+    console.log("1")
+      db.transaction((tx) => {
+        console.log("2")
+        tx.executeSql('UPDATE user_acc SET expense = ? WHERE id = 1', [userExpense],
+          (txObj, resultSet) => {
+            if (resultSet.rowsAffected > 0) {
+              console.log("3")
+              let exisUserAcc = [...userAcc]
+              exisUserAcc[0][2] = userExpense
+              setUserAcc(exisUserAcc);
+              console.log("New expense Submitted: ", userExpense)
+            }
+          },
+          (txObj, error) => console.log(error)
+        );
+      });
+  }
+
+  const checkIfRowExists = (id, callback) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'SELECT EXISTS(SELECT 1 FROM user_acc WHERE id = ?) AS exist',
+        [id],
+        (tx, results) => {
+          const rowExists = results.rows.item(0).exist === 1;
+          callback(rowExists);
+        },
+        error => {
+          console.error('Error checking if row exists: ', error);
+          callback(false);
+        }
+      );
+    });
+  };
+
+  const addNewUserAcc = () => {
+    console.log("1")
+      db.transaction((tx) => {
+        console.log("2")
+        tx.executeSql('INSERT INTO user_acc (money, expense) values (?, ?)', [userMoney, userExpense],
+          (txObj, resultSet) => {
+            console.log("3")
+            let exisUserAcc = [];
+            exisUserAcc.push({ id: 1, money: userMoney, expense: userExpense});
+            setUserAcc(exisUserAcc);
+            console.log("Money Submitted: ", userMoney)
+            console.log("Expense Submitted: ", userExpense)
+          },
+          (txObj, error) => console.log(error)
+        );
+    })
+  };
 
   return (
     <SafeAreaView style={Styles.container}>
@@ -70,6 +169,7 @@ export default function AddScreen({navigation}) {
             setMoney(text);
           }}
           onSubmitEditing={() => {
+
             console.log("Money Submitted: ", money)
             setCurrentMoney(money)
             let temp_totalMoney = 0.0
@@ -77,7 +177,19 @@ export default function AddScreen({navigation}) {
             console.log(`${currentMoney} + ${totalMoney}`)
             setTotalMoney(temp_totalMoney)
             console.log(`${totalMoney}`)
+            setUserMoney(temp_totalMoney)
             
+            const idToCheck = 1;
+            checkIfRowExists(idToCheck, rowExists => {
+              if (rowExists) {
+                updateAcc_money();
+                console.log("User money: " , userMoney)
+              } else {
+                console.log('The row does not exist.');
+                addNewUserAcc()
+              }
+            });
+
             setMoney(0.0)
           }}
           placeholder={"Amount"}

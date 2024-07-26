@@ -14,7 +14,8 @@ import { LoadingScreen } from "./loading.js";
 import { 
   db, expenses, setExpenses, 
   UpdateContext, totalMoney, setTotalMoney,
-  totalExpense, setTotalExpense, currentMoney
+  totalExpense, setTotalExpense, currentMoney,
+  userAcc, setUserAcc
  } from "./exports.js";
 
 const CURRENCY_SYMBOL = "₱ ";
@@ -35,16 +36,31 @@ export default function HomeScreen() {
     });
 
     db.transaction(tx => {
+      tx.executeSql('CREATE TABLE IF NOT EXISTS user_acc (id INTEGER PRIMARY KEY AUTOINCREMENT, money REAL NOT NULL, expense REAL NOT NULL)')
+    });
+
+    db.transaction(tx => {
       tx.executeSql('SELECT * FROM exp_list', null,
         (txObj, resultSet) => {
           setExpenses(resultSet.rows._array)
           console.log(resultSet.rows._array);
         },
-        (txObj, error) => console.log(error)
+        (txObj, error) => console.log("Expenses fetch error: " + error)
       );
       console.log(`Update counter: ${updateCounter}`);
     });
     
+    db.transaction(tx => {
+      tx.executeSql('SELECT * FROM user_acc', null,
+        (txObj, resultSet) => {
+          setUserAcc(resultSet.rows._array)
+          console.log(resultSet.rows._array);
+        },
+        (txObj, error) => console.log("User Account error: " + error)
+      );
+      console.log(`Update counter: ${updateCounter}`);
+    });
+
     setLoaded(true);
 
   }, [db]);
@@ -69,6 +85,20 @@ export default function HomeScreen() {
     </View>
   );
 
+  const getMoneyValue = () => {
+    if (isNaN(userAcc[0][1])) {
+      return 0;
+    }
+    return userAcc[0][1]
+  }
+
+  const getExpenseValue = () => {
+    if (isNaN(userAcc[0][2])) {
+      return 0;
+    }
+    return userAcc[0][2]
+  }
+
 
   return (
     <SafeAreaView style={Styles.container}>
@@ -76,7 +106,7 @@ export default function HomeScreen() {
       <Text style={Styles.h1}>Money</Text>
       <View style={[Styles.yellowContainer, {marginBottom: 50}]}>
         <View style={Styles.rowContainer}>
-          <Text style={[Styles.h1, {fontSize: 25}]}>{CURRENCY_SYMBOL + parseFloat(totalMoney)}</Text>
+          <Text style={[Styles.h1, {fontSize: 25}]}>{CURRENCY_SYMBOL + getMoneyValue()}</Text>
           <TouchableOpacity onPress={() => {
             console.log("Add pressed")
             console.log(Dimensions.get('screen'))
@@ -90,7 +120,7 @@ export default function HomeScreen() {
       <Text style={Styles.h1}>Expenses</Text>
       <View style={[Styles.yellowContainer, {marginBottom: 70}]}>
         <View style={Styles.rowContainer}>
-          <Text style={[Styles.h1, {fontSize: 25}]}>{CURRENCY_SYMBOL + parseFloat(totalExpense)}</Text>
+          <Text style={[Styles.h1, {fontSize: 25}]}>{CURRENCY_SYMBOL + getExpenseValue()}</Text>
           <TouchableOpacity onPress={() => {
             console.log("Add pressed")
             navigation.navigate("Add")
