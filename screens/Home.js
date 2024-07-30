@@ -23,7 +23,7 @@ const CURRENCY_SYMBOL = "₱ ";
 export default function HomeScreen() {
   const navigation = useNavigation();
   const { updateCounter } = useContext(UpdateContext);
-
+  // char
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
 
